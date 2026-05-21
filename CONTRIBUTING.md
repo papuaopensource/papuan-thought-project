@@ -1,53 +1,53 @@
-# Panduan Kontribusi
+# Contributing
 
-Terima kasih sudah meluangkan waktu untuk berkontribusi. Proyek ini terbuka untuk siapa saja yang ingin membantu membangun ruang digital untuk suara-suara Papua.
+Thank you for taking the time to contribute. This project is open to anyone who wants to help build a digital space for Papuan voices.
 
-## Cara Melaporkan Masalah
+## Reporting Issues
 
-Gunakan fitur Issues di repositori GitHub untuk melaporkan bug atau mengusulkan fitur baru. Sertakan langkah-langkah untuk mereproduksi masalah jika memungkinkan.
+Use the Issues feature on the GitHub repository to report bugs or propose new features. Include steps to reproduce the issue where possible.
 
-## Alur Kontribusi
+## Contribution Workflow
 
-Fork repositori, lalu buat branch baru dari `main`.
+Fork the repository, then create a new branch from `main`.
 
-Penamaan branch:
+Branch naming:
 
-- `feat/nama-fitur` untuk fitur baru
-- `fix/nama-perbaikan` untuk perbaikan bug
-- `docs/nama-perubahan` untuk perubahan dokumentasi
+- `feat/feature-name` for new features
+- `fix/fix-name` for bug fixes
+- `docs/change-name` for documentation changes
 
-Buat perubahan, pastikan proyek tetap berjalan dengan benar, lalu kirim pull request ke branch `main`.
+Make your changes, ensure the project still runs correctly, then submit a pull request to the `main` branch.
 
-## Standar Kode
+## Code Standards
 
-**Views** — Semua view ditulis sebagai Class-Based View (CBV). Function-based view tidak digunakan.
+**Views** — All views are written as Class-Based Views (CBVs). Function-based views are not used.
 
-**Logika bisnis** — Taruh di `services.py` masing-masing app. View hanya memanggil fungsi dari services.
+**Business logic** — Place it in each app's `services.py`. Views only call functions from services.
 
-**Migrasi** — Selalu sertakan file migrasi jika ada perubahan model.
+**Migrations** — Always include migration files when changing a model.
 
-**Komentar** — Tulis hanya jika ada sesuatu yang tidak jelas dari kode itu sendiri.
+**Comments** — Write them only when something is not obvious from the code itself.
 
-## Pesan Commit
+## Commit Messages
 
-Proyek ini mengikuti konvensi [Conventional Commits](https://www.conventionalcommits.org).
+This project follows the [Conventional Commits](https://www.conventionalcommits.org) convention.
 
 Format:
 
 ```
-<type>(<scope>): <deskripsi singkat>
+<type>(<scope>): <short description>
 ```
 
-Type yang umum digunakan:
+Common types:
 
-- `feat` — fitur baru
-- `fix` — perbaikan bug
-- `docs` — perubahan dokumentasi
-- `refactor` — perubahan kode tanpa menambah fitur atau memperbaiki bug
-- `style` — perubahan tampilan atau format
-- `chore` — pemeliharaan, konfigurasi, dependensi
+- `feat` — new feature
+- `fix` — bug fix
+- `docs` — documentation changes
+- `refactor` — code change without adding a feature or fixing a bug
+- `style` — visual or formatting changes
+- `chore` — maintenance, configuration, dependencies
 
-Contoh:
+Examples:
 
 ```
 feat(essays): add essay edit functionality
@@ -56,6 +56,6 @@ docs(readme): update local setup instructions
 refactor(interactions): extract tag helper into shared function
 ```
 
-## Pertanyaan
+## Questions
 
-Hubungi tim Papua Open Source melalui halaman kontak di platform atau buka diskusi di repositori GitHub.
+Reach out to the Papua Open Source team via the contact page on the platform or open a discussion in the GitHub repository.

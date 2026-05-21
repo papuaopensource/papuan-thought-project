@@ -2,40 +2,40 @@
 
 > An open-source platform for essays, reflections, and community writing from Papuans.
 
-Diinisiasi oleh **Papua Open Source** — komunitas teknologi yang berkontribusi bagi Tanah Papua melalui perangkat lunak terbuka.
+Initiated by **Papua Open Source** — a tech community contributing to Papua through open source software.
 
-## Tentang Proyek
+## About
 
-Platform ini dibuat sebagai ruang terbuka bagi masyarakat Papua untuk menulis dan membagikan perspektif, pengalaman, serta pemikiran mereka tentang Papua dalam bentuk esai, refleksi, cerita, dan gagasan tentang budaya, masyarakat, politik, teknologi, identitas, dan kehidupan sehari-hari.
+This platform is an open space for Papuans to write and share their perspectives, experiences, and thoughts about Papua — in the form of essays, reflections, stories, and ideas about culture, society, politics, technology, identity, and everyday life.
 
-## Fitur
+## Features
 
-- Tulis dan terbitkan esai dengan dukungan Markdown
-- Tag yang dibuat langsung oleh penulis
-- Profil penulis dengan riwayat esai dan koleksi simpan
-- Reaksi (love) dan simpan (bookmark) per esai
-- Komentar dan diskusi
-- Sistem ikuti penulis
-- Notifikasi: esai baru dari penulis yang diikuti dan rekomendasi sistem
-- Panel admin menggunakan django-unfold
+- Write and publish essays with Markdown support
+- User-created tags
+- Author profiles with essay history and saved collections
+- Reactions (love) and bookmarks per essay
+- Comments and discussion
+- Follow authors
+- Notifications: new essays from followed authors and system recommendations
+- Admin panel using django-unfold
 
 ## Stack
 
 - Python 3.13 + Django 6.x
 - TailwindCSS v4 via django-tailwind
-- Alpine.js untuk interaktivitas frontend
-- django-unfold untuk panel admin
-- SQLite (pengembangan) / PostgreSQL (produksi)
-- uv sebagai package manager
+- Alpine.js for frontend interactivity
+- django-unfold for the admin panel
+- SQLite (development) / PostgreSQL (production)
+- uv as package manager
 
-## Memulai
+## Getting Started
 
-Lihat [DEVELOPMENT.md](DEVELOPMENT.md) untuk panduan menjalankan proyek secara lokal.
+See [DEVELOPMENT.md](DEVELOPMENT.md) for instructions on running the project locally.
 
-## Kontribusi
+## Contributing
 
-Lihat [CONTRIBUTING.md](CONTRIBUTING.md) untuk panduan berkontribusi.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
-## Lisensi
+## License
 
-AGPL-3.0 License. Lihat file [LICENSE](LICENSE) untuk detail lengkapnya.
+AGPL-3.0 License. See the [LICENSE](LICENSE) file for details.
