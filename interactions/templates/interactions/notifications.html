@@ -46,7 +46,7 @@
           <div class="flex-1 min-w-0">
             <p class="text-sm text-neutral-300 leading-relaxed">
               {% if n.notification_type == 'new_post' %}
-                <a href="{% url 'accounts:profile' username=n.sender.username %}" class="font-medium text-neutral-100 hover:text-neutral-300 transition-colors">{{ n.sender.username }}</a>
+                <a href="{% url 'accounts:profile' username=n.sender.username %}" class="font-medium text-neutral-100 hover:text-neutral-300 transition-colors">{{ n.sender.first_name }} {{ n.sender.last_name }}</a>
                 published a new essay —
                 {% if n.essay %}
                   <a href="{% url 'essays:detail' username=n.essay.author.username slug=n.essay.slug %}" class="text-neutral-400 hover:text-neutral-200 transition-colors">{{ n.essay.title }}</a>
@@ -55,19 +55,19 @@
                 <span class="text-neutral-500">Recommended for you —</span>
                 {% if n.essay %}
                   <a href="{% url 'essays:detail' username=n.essay.author.username slug=n.essay.slug %}" class="text-neutral-400 hover:text-neutral-200 transition-colors">{{ n.essay.title }}</a>
-                  <span class="text-neutral-600"> by {{ n.essay.author.username }}</span>
+                  <span class="text-neutral-600"> by {{ n.essay.author.first_name }} {{ n.essay.author.last_name }}</span>
                 {% endif %}
               {% elif n.notification_type == 'reaction' %}
-                <a href="{% url 'accounts:profile' username=n.sender.username %}" class="font-medium text-neutral-100 hover:text-neutral-300 transition-colors">{{ n.sender.username }}</a>
+                <a href="{% url 'accounts:profile' username=n.sender.username %}" class="font-medium text-neutral-100 hover:text-neutral-300 transition-colors">{{ n.sender.first_name }} {{ n.sender.last_name }}</a>
                 loved your essay —
                 {% if n.essay %}
                   <a href="{% url 'essays:detail' username=n.essay.author.username slug=n.essay.slug %}" class="text-neutral-400 hover:text-neutral-200 transition-colors">{{ n.essay.title }}</a>
                 {% endif %}
               {% elif n.notification_type == 'follow' %}
-                <a href="{% url 'accounts:profile' username=n.sender.username %}" class="font-medium text-neutral-100 hover:text-neutral-300 transition-colors">{{ n.sender.username }}</a>
+                <a href="{% url 'accounts:profile' username=n.sender.username %}" class="font-medium text-neutral-100 hover:text-neutral-300 transition-colors">{{ n.sender.first_name }} {{ n.sender.last_name }}</a>
                 <span class="text-neutral-500"> started following you</span>
               {% elif n.notification_type == 'comment' %}
-                <a href="{% url 'accounts:profile' username=n.sender.username %}" class="font-medium text-neutral-100 hover:text-neutral-300 transition-colors">{{ n.sender.username }}</a>
+                <a href="{% url 'accounts:profile' username=n.sender.username %}" class="font-medium text-neutral-100 hover:text-neutral-300 transition-colors">{{ n.sender.first_name }} {{ n.sender.last_name }}</a>
                 commented on your essay —
                 {% if n.essay %}
                   <a href="{% url 'essays:detail' username=n.essay.author.username slug=n.essay.slug %}" class="text-neutral-400 hover:text-neutral-200 transition-colors">{{ n.essay.title }}</a>
