@@ -1,0 +1,89 @@
+{% extends "main_layout.html" %}
+
+{% block title %}The Papuan Thought Project{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+
+  <!-- Featured -->
+  {% if featured %}
+    <section class="mb-12">
+      <p class="text-xs uppercase tracking-widest text-neutral-600 mb-5">Featured</p>
+      <div class="flex flex-col gap-6">
+        {% for essay in featured %}
+          <article>
+            <a href="{% url 'essays:detail' username=essay.author.username slug=essay.slug %}" class="group block">
+              <h2 class="text-lg font-semibold text-neutral-100 group-hover:text-neutral-300 transition-colors leading-snug">{{ essay.title }}</h2>
+              {% if essay.excerpt %}
+                <p class="text-sm text-neutral-500 mt-1.5 line-clamp-2 leading-relaxed">{{ essay.excerpt }}</p>
+              {% endif %}
+              <div class="flex items-center gap-2 mt-3 text-xs text-neutral-600">
+                <a href="{% url 'accounts:profile' username=essay.author.username %}" class="hover:text-neutral-400 transition-colors">{{ essay.author.username }}</a>
+                <span>·</span>
+                <span>{{ essay.published_at|date:"N j, Y" }}</span>
+                <span>·</span>
+                <span>{{ essay.read_time }} min read</span>
+              </div>
+            </a>
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+    <hr class="border-neutral-800 mb-10" />
+  {% endif %}
+
+  <!-- Feed -->
+  <section>
+    <p class="text-xs uppercase tracking-widest text-neutral-600 mb-5">Latest</p>
+    {% if essays %}
+      <div class="flex flex-col divide-y divide-neutral-800">
+        {% for essay in essays %}
+          <article class="py-6 first:pt-0">
+            <a href="{% url 'essays:detail' username=essay.author.username slug=essay.slug %}" class="group block">
+              <h2 class="text-base font-medium text-neutral-100 group-hover:text-neutral-300 transition-colors leading-snug">{{ essay.title }}</h2>
+              {% if essay.excerpt %}
+                <p class="text-sm text-neutral-500 mt-1.5 line-clamp-2 leading-relaxed">{{ essay.excerpt }}</p>
+              {% endif %}
+            </a>
+            <div class="flex items-center gap-2 mt-3 text-xs text-neutral-600">
+              <a href="{% url 'accounts:profile' username=essay.author.username %}" class="hover:text-neutral-400 transition-colors">{{ essay.author.username }}</a>
+              <span>·</span>
+              <span>{{ essay.published_at|date:"N j, Y" }}</span>
+              <span>·</span>
+              <span>{{ essay.read_time }} min read</span>
+              {% for tag in essay.tags.all|slice:":3" %}
+                <span>·</span>
+                <a href="{% url 'essays:tag' slug=tag.slug %}" class="hover:text-neutral-400 transition-colors">#{{ tag.name }}</a>
+              {% endfor %}
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+      {% if is_paginated %}
+        <div class="flex items-center justify-between mt-10 text-sm text-neutral-500">
+          {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="hover:text-neutral-300 transition-colors">← Newer</a>
+          {% else %}
+            <span></span>
+          {% endif %}
+          <span class="text-xs text-neutral-600">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="hover:text-neutral-300 transition-colors">Older →</a>
+          {% else %}
+            <span></span>
+          {% endif %}
+        </div>
+      {% endif %}
+
+    {% else %}
+      <p class="text-sm text-neutral-600">No essays published yet. Be the first to write.</p>
+      {% if not user.is_authenticated %}
+        <a href="{% url 'accounts:register' %}" class="inline-block mt-4 text-sm text-neutral-300 hover:text-neutral-100 transition-colors">Join the community →</a>
+      {% endif %}
+    {% endif %}
+  </section>
+
+</div>
+{% endblock %}
