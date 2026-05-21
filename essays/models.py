@@ -43,6 +43,7 @@ class Essay(models.Model):
     tags = models.ManyToManyField(Tag, blank=True, related_name="essays")
     is_featured = models.BooleanField(default=False)
     is_edited = models.BooleanField(default=False)
+    view_count = models.PositiveIntegerField(default=0)
     read_time = models.PositiveSmallIntegerField(
         default=0, help_text="Estimated read time in minutes."
     )

@@ -2,6 +2,7 @@ import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
+from django.db.models import F
 from django.views import View
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404, redirect, render
@@ -54,11 +55,18 @@ class EssayDetailView(DetailView):
             status=Essay.PUBLISHED,
         )
 
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        Essay.objects.filter(pk=self.object.pk).update(view_count=F("view_count") + 1)
+        return response
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["comments"] = self.object.comments.filter(parent=None).select_related(
             "author", "author__profile"
         )
+        context["heart_count"] = self.object.reactions.filter(reaction_type="heart").count()
+        context["bookmark_count"] = self.object.bookmarks.count()
         context["is_hearted"] = False
         context["is_bookmarked"] = False
         if self.request.user.is_authenticated:
