@@ -95,6 +95,25 @@ def accept_invitation(token: str, username: str, password: str) -> User:
     return user
 
 
+def change_password(user, old_password: str, new_password: str) -> bool:
+    if not user.check_password(old_password):
+        return False
+    user.set_password(new_password)
+    user.save(update_fields=["password"])
+    return True
+
+
+def change_email(user, new_email: str) -> None:
+    if User.objects.filter(email=new_email).exclude(pk=user.pk).exists():
+        raise ValueError("This email is already in use.")
+    user.email = new_email
+    user.save(update_fields=["email"])
+
+
+def delete_account(user) -> None:
+    user.delete()
+
+
 def update_profile(user, photo=None, **data) -> "Profile":
     user_dirty = False
     for field in list(data.keys()):

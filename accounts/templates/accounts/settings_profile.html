@@ -1,0 +1,97 @@
+{% extends "accounts/settings_base.html" %}
+
+{% block title %}Edit Profile — Papuan Thought{% endblock %}
+{% block settings_title %}Edit profile{% endblock %}
+
+{% block settings_content %}
+
+{% if success %}
+  <p class="text-sm text-neutral-400 border border-neutral-700 rounded px-3 py-2 mb-6">{{ success }}</p>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data" class="flex flex-col gap-6">
+  {% csrf_token %}
+
+  <!-- Photo -->
+  <div class="flex items-center gap-4">
+    <div class="w-16 h-16 rounded-full flex items-center justify-center text-base font-semibold text-neutral-400 overflow-hidden shrink-0" style="background-color: #2a2a2a;">
+      {% if profile.photo %}
+        <img src="{{ profile.photo.url }}" alt="Photo" class="w-full h-full object-cover" />
+      {% else %}
+        {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+      {% endif %}
+    </div>
+    <div class="flex flex-col gap-1.5">
+      <label for="photo" class="text-xs text-neutral-400 uppercase tracking-wider">Profile photo</label>
+      <input id="photo" name="photo" type="file" accept="image/*"
+        class="text-xs text-neutral-500 file:mr-3 file:text-xs file:border file:border-neutral-700 file:rounded file:px-2 file:py-1 file:bg-transparent file:text-neutral-400 hover:file:text-neutral-200 hover:file:border-neutral-500 file:transition-colors cursor-pointer" />
+    </div>
+  </div>
+
+  <div class="border-t border-neutral-800"></div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+    <div class="flex flex-col gap-1.5">
+      <label for="first_name" class="text-xs text-neutral-400 uppercase tracking-wider">First name</label>
+      <input id="first_name" name="first_name" type="text" value="{{ user.first_name }}"
+        class="bg-transparent border-b border-neutral-700 py-2 text-sm text-neutral-100 focus:outline-none focus:border-neutral-500 transition-colors" />
+    </div>
+    <div class="flex flex-col gap-1.5">
+      <label for="last_name" class="text-xs text-neutral-400 uppercase tracking-wider">Last name</label>
+      <input id="last_name" name="last_name" type="text" value="{{ user.last_name }}"
+        class="bg-transparent border-b border-neutral-700 py-2 text-sm text-neutral-100 focus:outline-none focus:border-neutral-500 transition-colors" />
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-1.5">
+    <label for="bio" class="text-xs text-neutral-400 uppercase tracking-wider">Bio</label>
+    <textarea id="bio" name="bio" rows="3"
+      class="bg-transparent border-b border-neutral-700 py-2 text-sm text-neutral-100 placeholder-neutral-700 focus:outline-none focus:border-neutral-500 transition-colors resize-none leading-relaxed"
+      placeholder="A short bio about yourself">{{ profile.bio }}</textarea>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+    <div class="flex flex-col gap-1.5">
+      <label for="location" class="text-xs text-neutral-400 uppercase tracking-wider">Location</label>
+      <input id="location" name="location" type="text" value="{{ profile.location }}"
+        placeholder="e.g. Jayapura, Papua"
+        class="bg-transparent border-b border-neutral-700 py-2 text-sm text-neutral-100 placeholder-neutral-700 focus:outline-none focus:border-neutral-500 transition-colors" />
+    </div>
+    <div class="flex flex-col gap-1.5">
+      <label for="website" class="text-xs text-neutral-400 uppercase tracking-wider">Website</label>
+      <input id="website" name="website" type="url" value="{{ profile.website }}"
+        placeholder="https://yoursite.com"
+        class="bg-transparent border-b border-neutral-700 py-2 text-sm text-neutral-100 placeholder-neutral-700 focus:outline-none focus:border-neutral-500 transition-colors" />
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+    <div class="flex flex-col gap-1.5">
+      <label for="twitter" class="text-xs text-neutral-400 uppercase tracking-wider">Twitter / X</label>
+      <div class="flex items-center border-b border-neutral-700 focus-within:border-neutral-500 transition-colors">
+        <span class="text-xs text-neutral-600 pr-1.5">@</span>
+        <input id="twitter" name="twitter" type="text" value="{{ profile.twitter }}"
+          placeholder="username"
+          class="flex-1 bg-transparent py-2 text-sm text-neutral-100 placeholder-neutral-700 focus:outline-none" />
+      </div>
+    </div>
+    <div class="flex flex-col gap-1.5">
+      <label for="instagram" class="text-xs text-neutral-400 uppercase tracking-wider">Instagram</label>
+      <div class="flex items-center border-b border-neutral-700 focus-within:border-neutral-500 transition-colors">
+        <span class="text-xs text-neutral-600 pr-1.5">@</span>
+        <input id="instagram" name="instagram" type="text" value="{{ profile.instagram }}"
+          placeholder="username"
+          class="flex-1 bg-transparent py-2 text-sm text-neutral-100 placeholder-neutral-700 focus:outline-none" />
+      </div>
+    </div>
+  </div>
+
+  <div class="pt-2">
+    <button type="submit"
+      class="bg-neutral-100 text-neutral-900 font-medium text-sm rounded px-4 py-2 hover:bg-white transition-colors">
+      Save changes
+    </button>
+  </div>
+</form>
+
+{% endblock %}

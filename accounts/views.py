@@ -1,4 +1,4 @@
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.views.generic import DetailView, TemplateView
@@ -193,10 +193,21 @@ class ProfileView(DetailView):
 
 
 class ProfileEditView(LoginRequiredMixin, View):
-    template_name = "accounts/profile_edit.html"
+    def get(self, request):
+        return redirect("accounts:settings_profile")
+
+    def post(self, request):
+        return redirect("accounts:settings_profile")
+
+
+class SettingsProfileView(LoginRequiredMixin, View):
+    template_name = "accounts/settings_profile.html"
+
+    def _ctx(self, request, **extra):
+        return {"profile": request.user.profile, "active_section": "profile", **extra}
 
     def get(self, request):
-        return render(request, self.template_name, {"profile": request.user.profile})
+        return render(request, self.template_name, self._ctx(request))
 
     def post(self, request):
         data = {
@@ -210,4 +221,44 @@ class ProfileEditView(LoginRequiredMixin, View):
         }
         photo = request.FILES.get("photo")
         services.update_profile(request.user, photo=photo, **data)
-        return redirect("accounts:profile", username=request.user.username)
+        return render(request, self.template_name, self._ctx(request, success="Profile updated."))
+
+
+class SettingsIndexView(LoginRequiredMixin, View):
+    template_name = "accounts/settings_index.html"
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+
+class SettingsPasswordView(LoginRequiredMixin, View):
+    template_name = "accounts/settings_password.html"
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        old_pw = request.POST.get("old_password", "")
+        new_pw = request.POST.get("new_password", "")
+        confirm_pw = request.POST.get("confirm_password", "")
+        if new_pw != confirm_pw:
+            return render(request, self.template_name, {"error": "Passwords do not match."})
+        if len(new_pw) < 8:
+            return render(request, self.template_name, {"error": "Password must be at least 8 characters."})
+        if not services.change_password(request.user, old_pw, new_pw):
+            return render(request, self.template_name, {"error": "Current password is incorrect."})
+        update_session_auth_hash(request, request.user)
+        return render(request, self.template_name, {"success": "Password updated successfully."})
+
+
+class SettingsDeleteAccountView(LoginRequiredMixin, View):
+    def post(self, request):
+        password = request.POST.get("password", "")
+        if not request.user.check_password(password):
+            return render(request, "accounts/settings_account.html", {
+                "active_section": "account",
+                "delete_error": "Incorrect password. Account was not deleted.",
+            })
+        logout(request)
+        services.delete_account(request.user)
+        return redirect("essays:feed")
