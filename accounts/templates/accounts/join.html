@@ -44,7 +44,7 @@
       <p class="text-xs text-neutral-600 mb-1">Who are you, where are you from, and what do you want to write about here?</p>
       <textarea
         id="motivation" name="motivation" rows="4" required
-        class="bg-neutral-800 border {% if errors.motivation %}border-red-500{% else %}border-neutral-700{% endif %} rounded px-3 py-2 text-sm text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-neutral-500 transition-colors resize-none"
+        class="bg-neutral-800 border {% if errors.motivation %}border-red-500{% else %}border-neutral-700{% endif %} rounded px-3 py-2 text-sm text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-neutral-500 transition-colors resize-y"
       >{{ form_data.motivation|default:'' }}</textarea>
       {% if errors.motivation %}<p class="text-xs text-red-400">{{ errors.motivation }}</p>{% endif %}
     </div>
