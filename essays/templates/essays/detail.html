@@ -78,12 +78,12 @@
         </div>
         <span class="text-sm text-neutral-300 group-hover:text-neutral-100 transition-colors">{{ essay.author.first_name }} {{ essay.author.last_name }}</span>
       </a>
-      <span class="text-neutral-500">·</span>
+      <span class="text-neutral-500">•</span>
       <span class="text-sm text-neutral-400">{{ essay.published_at|date:"N j, Y" }}</span>
-      <span class="text-neutral-500">·</span>
+      <span class="text-neutral-500">•</span>
       <span class="text-sm text-neutral-400">{{ essay.read_time }} min read</span>
       {% if essay.is_edited %}
-        <span class="text-neutral-500">·</span>
+        <span class="text-neutral-500">•</span>
         <span class="text-xs text-neutral-500">edited</span>
       {% endif %}
     </div>
@@ -178,7 +178,7 @@
                 <a href="{% url 'accounts:profile' username=comment.author.username %}" class="text-sm font-medium text-neutral-200 hover:text-white transition-colors">{{ comment.author.first_name }} {{ comment.author.last_name }}</a>
                 <span class="text-sm text-neutral-500">{{ comment.created_at|date:"N j, Y" }}</span>
                 {% if comment.updated_at != comment.created_at %}
-                  <span class="text-sm text-neutral-500">· edited</span>
+                  <span class="text-sm text-neutral-500">• edited</span>
                 {% endif %}
               </div>
               <p class="text-base text-neutral-300 leading-relaxed">{{ comment.content }}</p>
