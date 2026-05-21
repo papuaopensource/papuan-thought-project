@@ -1,4 +1,7 @@
 from django.contrib.auth import authenticate, get_user_model
+from django.core.mail import send_mail
+from django.urls import reverse
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -6,22 +9,93 @@ USER_FIELDS = {"first_name", "last_name"}
 
 
 def authenticate_user(credential: str, password: str, request=None):
-    """Authenticate with either email or username."""
     return authenticate(request, username=credential, password=password)
 
 
-def register_user(username: str, email: str, password: str) -> User:
+def apply_for_membership(username: str, email: str, password: str, motivation: str) -> User:
     if User.objects.filter(username=username).exists():
-        raise ValueError("Username already taken.")
+        raise ValueError("Username is already taken.")
     if User.objects.filter(email=email).exists():
-        raise ValueError("Email already registered.")
-    user = User.objects.create_user(username=username, email=email, password=password)
-    user.profile  # trigger signal to ensure profile exists
+        raise ValueError("Email is already registered.")
+    user = User.objects.create_user(
+        username=username, email=email, password=password, is_active=False
+    )
+    user.profile.motivation = motivation
+    user.profile.save(update_fields=["motivation"])
+    return user
+
+
+def approve_user(user: User, request=None) -> User:
+    user.is_active = True
+    user.save(update_fields=["is_active"])
+    if request:
+        login_url = request.build_absolute_uri(reverse("accounts:login"))
+    else:
+        login_url = "/accounts/login/"
+    send_mail(
+        subject="Your account has been approved — Papuan Thought",
+        message=(
+            f"Hi {user.username},\n\n"
+            "Your application to join Papuan Thought has been approved.\n"
+            f"You can now sign in and start writing at: {login_url}\n\n"
+            "— The Papuan Thought Team"
+        ),
+        from_email=None,
+        recipient_list=[user.email],
+        fail_silently=True,
+    )
+    return user
+
+
+def create_invitation(email: str, invited_by: User, request) -> "Invitation":
+    from .models import Invitation
+    if User.objects.filter(email=email).exists():
+        raise ValueError("This email is already registered as an account.")
+    invitation, created = Invitation.objects.get_or_create(
+        email=email,
+        defaults={"invited_by": invited_by},
+    )
+    if not created and invitation.is_used:
+        raise ValueError("The invitation for this email has already been used.")
+    accept_url = request.build_absolute_uri(
+        reverse("accounts:invitation_accept", kwargs={"token": invitation.token})
+    )
+    send_mail(
+        subject="You're invited to join Papuan Thought",
+        message=(
+            f"Hi,\n\n"
+            f"You've been invited by {invited_by.username} to join Papuan Thought, "
+            "a community writing platform for Papuans.\n\n"
+            f"Click the link below to create your account:\n{accept_url}\n\n"
+            "This link can only be used once.\n\n"
+            "— The Papuan Thought Team"
+        ),
+        from_email=None,
+        recipient_list=[email],
+        fail_silently=False,
+    )
+    return invitation
+
+
+def accept_invitation(token: str, username: str, password: str) -> User:
+    from .models import Invitation
+    try:
+        invitation = Invitation.objects.get(token=token, used_at__isnull=True)
+    except Invitation.DoesNotExist:
+        raise ValueError("This invitation link is invalid or has already been used.")
+    if User.objects.filter(username=username).exists():
+        raise ValueError("Username is already taken.")
+    if User.objects.filter(email=invitation.email).exists():
+        raise ValueError("This email is already registered.")
+    user = User.objects.create_user(
+        username=username, email=invitation.email, password=password, is_active=True
+    )
+    invitation.used_at = timezone.now()
+    invitation.save(update_fields=["used_at"])
     return user
 
 
 def update_profile(user, photo=None, **data) -> "Profile":
-    """Update User fields and Profile fields from a single flat dict."""
     user_dirty = False
     for field in list(data.keys()):
         if field in USER_FIELDS:

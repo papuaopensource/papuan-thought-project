@@ -1,11 +1,11 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
-from django.views.generic import DetailView
+from django.views.generic import DetailView, TemplateView
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 
-from .models import User, Profile
+from .models import User, Profile, Invitation
 from . import services
 
 
@@ -23,13 +23,24 @@ class LoginView(View):
         user = services.authenticate_user(credential, password, request)
         if user:
             login(request, user)
-            next_url = request.GET.get("next", "essays:feed")
+            next_url = request.GET.get("next", reverse("essays:feed"))
             return redirect(next_url)
+        # Check if account exists but is pending approval
+        pending = (
+            User.objects.filter(username=credential, is_active=False).exists()
+            or User.objects.filter(email=credential, is_active=False).exists()
+        )
+        if pending:
+            return render(
+                request,
+                self.template_name,
+                {"error": "Your application is pending admin approval."},
+            )
         return render(request, self.template_name, {"error": "Invalid credentials."})
 
 
-class RegisterView(View):
-    template_name = "accounts/register.html"
+class JoinView(View):
+    template_name = "accounts/join.html"
 
     def get(self, request):
         if request.user.is_authenticated:
@@ -40,12 +51,100 @@ class RegisterView(View):
         username = request.POST.get("username", "").strip()
         email = request.POST.get("email", "").strip()
         password = request.POST.get("password", "")
+        motivation = request.POST.get("motivation", "").strip()
+
+        errors = {}
+        if not username:
+            errors["username"] = "Username is required."
+        if not email:
+            errors["email"] = "Email is required."
+        if not password or len(password) < 8:
+            errors["password"] = "Password must be at least 8 characters."
+        if not motivation:
+            errors["motivation"] = "Tell us a bit about yourself."
+
+        if errors:
+            return render(
+                request,
+                self.template_name,
+                {
+                    "errors": errors,
+                    "form_data": {
+                        "username": username,
+                        "email": email,
+                        "motivation": motivation,
+                    },
+                },
+            )
+
         try:
-            user = services.register_user(username, email, password)
+            services.apply_for_membership(username, email, password, motivation)
+            return redirect("accounts:join_pending")
+        except ValueError as e:
+            return render(
+                request,
+                self.template_name,
+                {
+                    "error": str(e),
+                    "form_data": {
+                        "username": username,
+                        "email": email,
+                        "motivation": motivation,
+                    },
+                },
+            )
+
+
+class JoinPendingView(TemplateView):
+    template_name = "accounts/join_pending.html"
+
+
+class InvitationAcceptView(View):
+    template_name = "accounts/invitation_accept.html"
+
+    def _get_invitation(self, token):
+        return get_object_or_404(Invitation, token=token, used_at__isnull=True)
+
+    def get(self, request, token):
+        invitation = self._get_invitation(token)
+        return render(request, self.template_name, {"invitation": invitation})
+
+    def post(self, request, token):
+        invitation = self._get_invitation(token)
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
+
+        errors = {}
+        if not username:
+            errors["username"] = "Username is required."
+        if not password or len(password) < 8:
+            errors["password"] = "Password must be at least 8 characters."
+
+        if errors:
+            return render(
+                request,
+                self.template_name,
+                {
+                    "invitation": invitation,
+                    "errors": errors,
+                    "form_data": {"username": username},
+                },
+            )
+
+        try:
+            user = services.accept_invitation(str(token), username, password)
             login(request, user, backend="accounts.backends.EmailOrUsernameBackend")
             return redirect("essays:feed")
         except ValueError as e:
-            return render(request, self.template_name, {"error": str(e)})
+            return render(
+                request,
+                self.template_name,
+                {
+                    "invitation": invitation,
+                    "error": str(e),
+                    "form_data": {"username": username},
+                },
+            )
 
 
 class LogoutView(View):
@@ -64,10 +163,10 @@ class ProfileView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         from essays.models import Essay as EssayModel
-        context["essays"] = (
-            self.object.essays.filter(status=EssayModel.PUBLISHED)
-            .order_by("-published_at")
-        )
+
+        context["essays"] = self.object.essays.filter(
+            status=EssayModel.PUBLISHED
+        ).order_by("-published_at")
         if self.request.user == self.object:
             context["bookmarked_essays"] = (
                 EssayModel.objects.filter(
@@ -82,6 +181,7 @@ class ProfileView(DetailView):
         context["is_following"] = False
         if self.request.user.is_authenticated and self.request.user != self.object:
             from interactions.models import Follow
+
             context["is_following"] = Follow.objects.filter(
                 follower=self.request.user, following=self.object
             ).exists()
