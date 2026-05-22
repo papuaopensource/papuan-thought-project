@@ -17,11 +17,11 @@
               <p class="text-sm text-neutral-400 mt-1.5 line-clamp-2">{{ essay.excerpt }}</p>
             {% endif %}
           </a>
-          <div class="flex items-center gap-2 mt-3 text-xs text-neutral-400">
-            <a href="{% url 'accounts:profile' username=essay.author.username %}" class="hover:text-neutral-400 transition-colors">{{ essay.author.username }}</a>
-            <span>·</span>
+          <div class="flex items-center gap-2 mt-3 text-sm text-neutral-400">
+            <a href="{% url 'accounts:profile' username=essay.author.username %}" class="hover:text-neutral-400 transition-colors">{{ essay.author.first_name }} {{ essay.author.last_name }}</a>
+            <span>•</span>
             <span>{{ essay.published_at|date:"N j, Y" }}</span>
-            <span>·</span>
+            <span>•</span>
             <span>{{ essay.read_time }} min read</span>
           </div>
         </article>

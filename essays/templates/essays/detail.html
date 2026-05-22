@@ -178,7 +178,8 @@
                 <a href="{% url 'accounts:profile' username=comment.author.username %}" class="text-sm font-medium text-neutral-200 hover:text-white transition-colors">{{ comment.author.first_name }} {{ comment.author.last_name }}</a>
                 <span class="text-sm text-neutral-500">{{ comment.created_at|date:"N j, Y" }}</span>
                 {% if comment.updated_at != comment.created_at %}
-                  <span class="text-sm text-neutral-500">• edited</span>
+                  <span class="text-neutral-600">•</span>
+                  <span class="text-sm text-neutral-500">edited</span>
                 {% endif %}
               </div>
               <p class="font-prose text-base text-neutral-300 leading-relaxed">{{ comment.content }}</p>
