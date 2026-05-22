@@ -17,6 +17,18 @@ class UserAdmin(BaseUserAdmin, ModelAdmin):
     search_fields = ("username", "email")
     actions = ["approve_users"]
 
+    def save_model(self, request, obj, form, change):
+        if change:
+            try:
+                was_inactive = not User.objects.filter(pk=obj.pk, is_active=True).exists()
+            except Exception:
+                was_inactive = False
+            super().save_model(request, obj, form, change)
+            if was_inactive and obj.is_active:
+                services.send_approval_email(obj, request)
+        else:
+            super().save_model(request, obj, form, change)
+
     @admin.action(description="Approve selected users")
     def approve_users(self, request, queryset):
         approved = 0

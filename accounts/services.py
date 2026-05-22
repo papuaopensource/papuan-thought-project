@@ -25,9 +25,7 @@ def apply_for_membership(username: str, email: str, password: str, motivation: s
     return user
 
 
-def approve_user(user: User, request=None) -> User:
-    user.is_active = True
-    user.save(update_fields=["is_active"])
+def send_approval_email(user: User, request=None) -> None:
     if request:
         login_url = request.build_absolute_uri(reverse("accounts:login"))
     else:
@@ -44,6 +42,12 @@ def approve_user(user: User, request=None) -> User:
         recipient_list=[user.email],
         fail_silently=True,
     )
+
+
+def approve_user(user: User, request=None) -> User:
+    user.is_active = True
+    user.save(update_fields=["is_active"])
+    send_approval_email(user, request)
     return user
 
 
