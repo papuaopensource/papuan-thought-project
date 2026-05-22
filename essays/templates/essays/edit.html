@@ -2,6 +2,67 @@
 
 {% block title %}Edit — {{ essay.title }} — Papuan Thought{% endblock %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<style>
+  .EasyMDEContainer { display: flex; flex-direction: column; }
+  .EasyMDEContainer .CodeMirror {
+    background: var(--bg-surface);
+    color: var(--color-body);
+    border: 1px solid var(--border-base);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.8;
+    padding: 16px 20px;
+    min-height: 480px;
+  }
+  .EasyMDEContainer .CodeMirror-scroll { min-height: 480px; }
+  .EasyMDEContainer .CodeMirror-cursor { border-color: var(--color-body); }
+  .EasyMDEContainer .CodeMirror-selected { background: var(--bg-muted); }
+  .editor-toolbar {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-base);
+    border-radius: 6px 6px 0 0;
+    padding: 4px 8px;
+    opacity: 1;
+  }
+  .editor-toolbar button {
+    color: var(--color-body) !important;
+    border-radius: 4px;
+    width: 28px;
+    height: 28px;
+  }
+  .editor-toolbar button:hover,
+  .editor-toolbar button.active {
+    background: var(--bg-muted) !important;
+    border-color: transparent !important;
+  }
+  .editor-toolbar i.separator { border-color: var(--border-base); }
+  .editor-preview, .editor-preview-side {
+    background: var(--bg-base);
+    color: var(--color-body);
+    border-color: var(--border-base);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.8;
+    padding: 20px 24px;
+  }
+  .editor-preview pre, .editor-preview-side pre {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-base);
+    border-radius: 4px;
+    padding: 12px;
+  }
+  .editor-preview-side { border-left-color: var(--border-base); }
+  .editor-statusbar { color: #737373; border-top-color: var(--border-base); font-size: 11px; }
+  .cm-s-easymde .cm-header { color: var(--color-body); font-weight: 600; }
+  .cm-s-easymde .cm-url, .cm-s-easymde .cm-link { color: #737373; }
+  .cm-s-easymde .cm-comment { color: #919191; }
+</style>
+{% endblock %}
+
 {% block content %}
 <div>
   <div class="flex items-center justify-between mb-8">
@@ -42,11 +103,8 @@
     </div>
 
     <div class="flex flex-col gap-1">
-      <label for="content" class="text-xs text-neutral-400 uppercase tracking-wider">Content <span class="text-neutral-700 normal-case">(Markdown supported)</span></label>
-      <textarea
-        id="content" name="content" rows="20" required
-        class="bg-neutral-800 border border-neutral-700 rounded px-3 py-3 text-sm text-neutral-200 placeholder-neutral-600 focus:outline-none focus:border-neutral-500 transition-colors resize-y leading-relaxed font-mono"
-      >{{ essay.content }}</textarea>
+      <label for="content" class="text-xs text-neutral-400 uppercase tracking-wider">Content</label>
+      <textarea id="content" name="content" required>{{ essay.content }}</textarea>
     </div>
 
     <!-- Tag input pre-populated with existing tags -->
@@ -121,4 +179,23 @@
     </div>
   </form>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<script>
+  const easyMDE = new EasyMDE({
+    element: document.getElementById('content'),
+    spellChecker: false,
+    autofocus: false,
+    toolbar: [
+      "bold", "italic", "strikethrough", "|",
+      "heading-1", "heading-2", "|",
+      "unordered-list", "ordered-list", "quote", "|",
+      "link", "|",
+      "preview", "side-by-side", "fullscreen", "|",
+      "guide"
+    ],
+    minHeight: "480px",
+    status: ["lines", "words"],
+  });
+</script>
 {% endblock %}
