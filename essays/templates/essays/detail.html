@@ -55,7 +55,7 @@
   <!-- Essay header -->
   <header class="mb-10">
     <div class="flex items-start justify-between gap-4 mb-4">
-      <h1 class="text-3xl font-bold text-neutral-100 leading-tight">{{ essay.title }}</h1>
+      <h1 class="font-prose text-3xl font-bold text-neutral-100 leading-tight">{{ essay.title }}</h1>
       {% if user == essay.author %}
         <div class="flex items-center gap-2 shrink-0 mt-1">
           <a href="{% url 'essays:edit' username=essay.author.username slug=essay.slug %}"
@@ -97,7 +97,7 @@
   </header>
 
   <!-- Essay content -->
-  <div class="prose prose-neutral prose-invert max-w-none text-neutral-300 text-[17px] leading-[1.85]">
+  <div class="font-prose prose prose-neutral prose-invert max-w-none text-neutral-300 text-[17px] leading-[1.85]">
     {{ essay.content|render_markdown }}
   </div>
 
@@ -181,7 +181,7 @@
                   <span class="text-sm text-neutral-500">• edited</span>
                 {% endif %}
               </div>
-              <p class="text-base text-neutral-300 leading-relaxed">{{ comment.content }}</p>
+              <p class="font-prose text-base text-neutral-300 leading-relaxed">{{ comment.content }}</p>
               {% if user == comment.author %}
                 <div class="flex items-center gap-3 mt-2">
                   <a href="{% url 'interactions:comment_edit' comment_id=comment.pk %}"

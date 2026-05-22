@@ -147,7 +147,7 @@
           {% for essay in essays %}
             <article class="py-6 first:pt-0">
               <a href="{% url 'essays:detail' username=profile_user.username slug=essay.slug %}" class="group block">
-                <h3 class="text-base font-medium text-neutral-100 group-hover:text-neutral-300 transition-colors leading-snug">{{ essay.title }}</h3>
+                <h3 class="font-prose text-base font-medium text-neutral-100 group-hover:text-neutral-300 transition-colors leading-snug">{{ essay.title }}</h3>
                 {% if essay.excerpt %}
                   <p class="text-sm text-neutral-400 mt-1.5 line-clamp-2 leading-relaxed">{{ essay.excerpt }}</p>
                 {% endif %}
@@ -170,7 +170,7 @@
             <article class="py-6 first:pt-0">
               <div class="flex items-start justify-between gap-4">
                 <a href="{% url 'essays:edit' username=profile_user.username slug=essay.slug %}" class="group flex-1 min-w-0">
-                  <h3 class="text-base font-medium text-neutral-100 group-hover:text-neutral-300 transition-colors leading-snug">{{ essay.title }}</h3>
+                  <h3 class="font-prose text-base font-medium text-neutral-100 group-hover:text-neutral-300 transition-colors leading-snug">{{ essay.title }}</h3>
                   {% if essay.excerpt %}
                     <p class="text-sm text-neutral-400 mt-1.5 line-clamp-2 leading-relaxed">{{ essay.excerpt }}</p>
                   {% endif %}
@@ -201,7 +201,7 @@
           {% for essay in bookmarked_essays %}
             <article class="py-6 first:pt-0">
               <a href="{% url 'essays:detail' username=essay.author.username slug=essay.slug %}" class="group block">
-                <h3 class="text-base font-medium text-neutral-100 group-hover:text-neutral-300 transition-colors leading-snug">{{ essay.title }}</h3>
+                <h3 class="font-prose text-base font-medium text-neutral-100 group-hover:text-neutral-300 transition-colors leading-snug">{{ essay.title }}</h3>
                 {% if essay.excerpt %}
                   <p class="text-sm text-neutral-400 mt-1.5 line-clamp-2 leading-relaxed">{{ essay.excerpt }}</p>
                 {% endif %}

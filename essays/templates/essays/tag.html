@@ -12,7 +12,7 @@
       {% for essay in essays %}
         <article class="py-6 first:pt-0">
           <a href="{% url 'essays:detail' username=essay.author.username slug=essay.slug %}" class="group block">
-            <h2 class="text-base font-medium text-neutral-100 group-hover:text-neutral-300 transition-colors">{{ essay.title }}</h2>
+            <h2 class="font-prose text-base font-medium text-neutral-100 group-hover:text-neutral-300 transition-colors">{{ essay.title }}</h2>
             {% if essay.excerpt %}
               <p class="text-sm text-neutral-400 mt-1.5 line-clamp-2">{{ essay.excerpt }}</p>
             {% endif %}
