@@ -1,4 +1,4 @@
-# The Papuan Thought Project
+# PapuanThought
 
 > An open-source platform for essays, reflections, and community writing from Papuans.
 
