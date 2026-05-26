@@ -32,16 +32,16 @@ jobs:
           # Menjalankan ssh-agent untuk mengelola kunci SSH
           # source: https://github.com/appleboy/ssh-action/issues/232#issuecomment-1849260489
           eval `ssh-agent -s`
-          ssh-add  ~/.ssh/papuathought
+          ssh-add  ~/.ssh/papuanthought
 
           # Pindah ke direktori proyek
           cd /var/www/
 
           # Clone repositori privat
-          if [ ! -d "papuathought" ]; then
-            git clone git@github.com:papuaopensource/papuathought.git papuathought
+          if [ ! -d "papuanthought" ]; then
+            git clone git@github.com:papuaopensource/papuanthought.git papuanthought
           else
-            cd papuathought
+            cd papuanthought
             # Fetch latest changes
             git fetch origin master
             # Reset local changes and ensure latest code is applied
@@ -57,7 +57,7 @@ jobs:
         port: ${{ secrets.SERVER_PORT }}
         script: |
          # Install dependencies and build assets
-         cd /var/www/papuathought
+         cd /var/www/papuanthought
          
          # Load nvm and set up Node.js environment
          export NVM_DIR="$HOME/.nvm"
@@ -76,7 +76,7 @@ jobs:
          # Collect static files
          uv run manage.py collectstatic --noinput
           
-    - name: 🧹 Restart Supervisor services for papuathought
+    - name: 🧹 Restart Supervisor services for papuanthought
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.SERVER_HOST }}
@@ -84,5 +84,5 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: ${{ secrets.SERVER_PORT }}
         script: |
-          echo "Restart Supervisor services for papuathought"
-          sudo supervisorctl restart papuathought
+          echo "Restart Supervisor services for papuanthought"
+          sudo supervisorctl restart papuanthought
