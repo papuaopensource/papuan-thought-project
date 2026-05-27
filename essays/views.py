@@ -57,8 +57,22 @@ class EssayDetailView(DetailView):
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
-        Essay.objects.filter(pk=self.object.pk).update(view_count=F("view_count") + 1)
+        self._record_view(request, self.object.pk)
         return response
+
+    @staticmethod
+    def _record_view(request, essay_pk):
+        # Don't count the author visiting their own essay
+        if request.user.is_authenticated and Essay.objects.filter(pk=essay_pk, author=request.user).exists():
+            return
+        # Deduplicate within a session
+        seen_key = "seen_essays"
+        seen = request.session.get(seen_key, [])
+        if essay_pk in seen:
+            return
+        seen.append(essay_pk)
+        request.session[seen_key] = seen
+        Essay.objects.filter(pk=essay_pk).update(view_count=F("view_count") + 1)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

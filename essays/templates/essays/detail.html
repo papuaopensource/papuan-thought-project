@@ -117,8 +117,8 @@
   {% endif %}
 
   <!-- Reactions -->
-  {% if user.is_authenticated %}
-    <div class="flex items-center gap-1 {% if user == essay.author %}mt-4{% else %}mt-10 pt-8 border-t border-neutral-800{% endif %}">
+  <div class="flex items-center gap-1 {% if user == essay.author %}mt-4{% else %}mt-10 pt-8 border-t border-neutral-800{% endif %}">
+    {% if user.is_authenticated %}
       <button @click="toggleHeart()" type="button"
         class="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded hover:bg-neutral-800 transition-colors"
         :class="hearted ? 'text-red-400' : 'text-neutral-400 hover:text-neutral-100'">
@@ -140,31 +140,46 @@
         </svg>
         <span x-text="(bookmarked ? 'Saved' : 'Save') + (bookmarkCount > 0 ? ' · ' + bookmarkCount : '')"></span>
       </button>
-    </div>
-  {% endif %}
+    {% else %}
+      <span class="flex items-center gap-1.5 text-sm text-neutral-600 px-3 py-1.5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+        </svg>
+        {% if heart_count %}{{ heart_count }}{% endif %}
+      </span>
+      <span class="flex items-center gap-1.5 text-sm text-neutral-600 px-3 py-1.5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+        </svg>
+        {% if bookmark_count %}{{ bookmark_count }}{% endif %}
+      </span>
+      <span class="text-neutral-700 text-sm px-1">·</span>
+      <a href="{% url 'accounts:login' %}?next={{ request.path }}"
+         class="text-sm text-neutral-500 hover:text-neutral-200 px-3 py-1.5 rounded hover:bg-neutral-800 transition-colors">
+        Sign in to react
+      </a>
+    {% endif %}
+  </div>
 
   <!-- Comments -->
+  {% if user.is_authenticated %}
   <section class="mt-12">
     <h2 class="text-xs uppercase tracking-widest text-neutral-400 mb-6">Discussion</h2>
 
-    {% if user.is_authenticated %}
-      <form method="post" action="{% url 'interactions:comment' essay_id=essay.pk %}" class="mb-8">
-        {% csrf_token %}
-        <textarea
-          name="content"
-          rows="3"
-          placeholder="Share your thoughts..."
-          class="w-full bg-neutral-800 border border-neutral-700 rounded px-3 py-2 text-sm text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-neutral-500 transition-colors resize-none"
-        ></textarea>
-        <button type="submit" class="mt-2 text-xs bg-neutral-700 text-neutral-300 hover:bg-neutral-600 px-3 py-1.5 rounded transition-colors">
-          Post comment
-        </button>
-      </form>
-    {% else %}
-      <p class="text-sm text-neutral-400 mb-8">
-        <a href="{% url 'accounts:login' %}" class="text-neutral-200 hover:text-white transition-colors">Sign in</a> to join the discussion.
-      </p>
-    {% endif %}
+    <form method="post" action="{% url 'interactions:comment' essay_id=essay.pk %}" class="mb-8">
+      {% csrf_token %}
+      <textarea
+        name="content"
+        rows="3"
+        placeholder="Share your thoughts..."
+        class="w-full bg-neutral-800 border border-neutral-700 rounded px-3 py-2 text-sm text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-neutral-500 transition-colors resize-none"
+      ></textarea>
+      <button type="submit" class="mt-2 text-xs bg-neutral-700 text-neutral-300 hover:bg-neutral-600 px-3 py-1.5 rounded transition-colors">
+        Post comment
+      </button>
+    </form>
 
     {% if comments %}
       <div class="flex flex-col gap-6">
@@ -200,6 +215,7 @@
       <p class="text-sm text-neutral-500">No comments yet.</p>
     {% endif %}
   </section>
+  {% endif %}
 
   <!-- Toast notification -->
   <div x-show="toastVisible" x-cloak
