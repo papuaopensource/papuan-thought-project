@@ -127,8 +127,8 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="noreply@papuanthought.com")
 
 UNFOLD = {
-    "SITE_TITLE": "The Papuan Thoughts Project",
-    "SITE_HEADER": "Papuan Thoughts",
+    "SITE_TITLE": "The Papuan Thought Project",
+    "SITE_HEADER": "Papuan Thought",
     "SITE_DESCRIPTION": "A platform for sharing thoughts and ideas from the Papuan community.",
     "SITE_URL": "/",
     "SITE_SYMBOL": "newspaper",
