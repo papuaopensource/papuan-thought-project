@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "django.contrib.sites",
     "whitenoise.runserver_nostatic",  # 3rd-party
     "django.contrib.staticfiles",
     # Third-party apps
@@ -105,6 +106,8 @@ MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "mediafiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+SITE_ID = 1
 
 TAILWIND_APP_NAME = "theme"
 
