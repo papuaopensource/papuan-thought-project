@@ -1,10 +1,19 @@
 from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from unfold.admin import ModelAdmin
+from unfold.contrib.inlines.admin import StackedInline
 from unfold.forms import AdminPasswordChangeForm, UserChangeForm, UserCreationForm
 
 from .models import User, Profile, Invitation
 from . import services
+
+
+class ProfileInline(StackedInline):
+    model = Profile
+    can_delete = False
+    extra = 0
+    readonly_fields = ("motivation",)
+    fields = ("bio", "location", "website", "twitter", "instagram", "motivation")
 
 
 @admin.register(User)
@@ -12,10 +21,21 @@ class UserAdmin(BaseUserAdmin, ModelAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
     change_password_form = AdminPasswordChangeForm
-    list_display = ("username", "email", "is_active", "is_staff", "date_joined")
+    list_display = ("username", "email", "motivation_preview", "is_active", "is_staff", "date_joined")
     list_filter = ("is_active", "is_staff")
     search_fields = ("username", "email")
     actions = ["approve_users"]
+    inlines = [ProfileInline]
+
+    @admin.display(description="Motivation")
+    def motivation_preview(self, obj):
+        try:
+            text = obj.profile.motivation
+            if text and len(text) > 80:
+                return text[:80] + "…"
+            return text or "—"
+        except Exception:
+            return "—"
 
     def save_model(self, request, obj, form, change):
         if change:
